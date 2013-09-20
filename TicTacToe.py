@@ -16,7 +16,7 @@ class TicTacToe(object):
         move = input()
         x = move[0]
         y = move[1]
-        return self.do_move(x, y, self.current_player)
+        return self.do_move(x-1, y-1, self.current_player)
 
     def print_board(self):
         for line in self.board:
@@ -27,7 +27,6 @@ class TicTacToe(object):
             if ' ' in line:
                 return False
         return True
-
 
     def do_move(self, x, y, player):
         if self.board[x][y] == ' ':
@@ -44,7 +43,7 @@ class TicTacToe(object):
             return {'victory':True, 'draw':False}
 
         count = 0
-        for i in xrange(1,3):
+        for i in xrange(0,3):
             if self.board[x][i] == player:
                 count += 1
         if count == 3:
