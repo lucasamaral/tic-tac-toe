@@ -1,3 +1,5 @@
+import time
+
 class TicTacToe(object):
     def __init__(self):
         self.board = [] # matriz 3x3 de 'X' ou 'O', inicialmente com ' ' em todas posicoes
@@ -10,6 +12,37 @@ class TicTacToe(object):
             return 'O'
         else:
             return 'X'
+
+    def minimax_move(self, player):
+        if self.table_full(self.board):
+            return (-1,-1,0)
+
+        path_results = []
+
+        for i in xrange(0,3):
+            for j in xrange(0,3):
+                if self.board[i][j] == ' ':
+                    result = self.do_move(i,j,player)
+                    if result['draw']:
+                        self.board[i][j] = ' '
+                        return (i,j,0)
+                    elif result['victory']:
+                        if player == self.current_player:
+                            self.board[i][j] = ' '
+                            return (i,j,1)
+                        else:
+                            self.board[i][j] = ' '
+                            return (i,j,-1)
+                    analisis = self.minimax_move(self.other_player(player))
+                    path_results.append((i,j,analisis[2]))
+                    # self.print_board()
+                    self.board[i][j] = ' '
+        path_results = sorted(path_results, key=lambda x:x[2], reverse = True)
+        if player == self.current_player:
+            return path_results[0]
+        else:
+            return path_results[-1]
+
 
     def human_move(self):
         print('Digite sua jogada na forma linha,coluna: ')
@@ -60,23 +93,7 @@ class TicTacToe(object):
         if count == 3 or count2 == 3:
             return {'victory':True, 'draw':False}
 
-        for i in xrange(0,3):
-            spaces_hor = 0
-            for j in xrange(0,3):
-                if self.board[i][j] == ' ':
-                    spaces_hor += 1
-            if spaces_hor == 3:
-                draw = False
-
-        for i in xrange(0,3):
-            spaces_vert = 0
-            for j in xrange(0,3):
-                if self.board[j][i] == ' ':
-                    spaces_vert += 1
-            if spaces_vert == 3:
-                draw = False
-
-        return {'victory':False,'draw':draw}
+        return {'victory':False,'draw':False}
 
 def play_game():
     game = TicTacToe()
@@ -86,6 +103,13 @@ def play_game():
     while not result['draw'] and not result['victory']:
         result = game.human_move()
         game.print_board()
-        print result
+        # time.sleep(0.5)
+        game.current_player = game.other_player(game.current_player)
+        play = game.minimax_move(game.current_player)
+        if play[0] == -1:
+            break;
+        result = game.do_move(play[0], play[1], game.current_player)
+        game.current_player = game.other_player(game.current_player)
+        game.print_board()
 
 play_game()
