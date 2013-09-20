@@ -23,10 +23,7 @@ class TicTacToe(object):
             for j in xrange(0,3):
                 if self.board[i][j] == ' ':
                     result = self.do_move(i,j,player)
-                    if result['draw']:
-                        self.board[i][j] = ' '
-                        return (i,j,0)
-                    elif result['victory']:
+                    if result:
                         if player == self.current_player:
                             self.board[i][j] = ' '
                             return (i,j,1)
@@ -67,20 +64,19 @@ class TicTacToe(object):
         else:
             raise Exception('Posicao ocupada')
 
-        draw = True
         count = 0
         for i in xrange(0,3):
             if self.board[i][y] == player:
                 count += 1
         if count == 3:
-            return {'victory':True, 'draw':False}
+            return True
 
         count = 0
         for i in xrange(0,3):
             if self.board[x][i] == player:
                 count += 1
         if count == 3:
-            return {'victory':True, 'draw':False}
+            return True
 
         count = 0
         count2 = 0
@@ -91,19 +87,18 @@ class TicTacToe(object):
                 if self.board[i][2-i] == player:
                     count2 += 1
         if count == 3 or count2 == 3:
-            return {'victory':True, 'draw':False}
+            return True
 
-        return {'victory':False,'draw':False}
+        return False
 
 def play_game():
     game = TicTacToe()
     game.current_player = 'X'
-    result = {'draw':False, 'victory':False}
+    result = False
     game.print_board()
-    while not result['draw'] and not result['victory']:
+    while not result:
         result = game.human_move()
         game.print_board()
-        # time.sleep(0.5)
         game.current_player = game.other_player(game.current_player)
         play = game.minimax_move(game.current_player)
         if play[0] == -1:
