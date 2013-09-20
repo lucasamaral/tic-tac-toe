@@ -1,9 +1,9 @@
 class TicTacToe(object):
     def __init__(self):
-        self.board = [] # matriz 3x3 de 'X' ou 'O', inicialmente com '' em todas posições
+        self.board = [] # matriz 3x3 de 'X' ou 'O', inicialmente com ' ' em todas posicoes
         for i in xrange(0,3):
-            self.board.append(['', '', ''])
-        self.current_player = '' # jogador atual: 'X' ou 'O'
+            self.board.append([' ', ' ', ' '])
+        self.current_player = ' ' # jogador atual: 'X' ou 'O'
 
     def other_player(self, player):
         if player == 'X':
@@ -11,60 +11,82 @@ class TicTacToe(object):
         else:
             return 'X'
 
+    def human_move(self):
+        print('Digite sua jogada na forma linha,coluna: ')
+        move = input()
+        x = move[0]
+        y = move[1]
+        return self.do_move(x, y, self.current_player)
 
-        
+    def print_board(self):
+        for line in self.board:
+            print('|' + ' '.join(line) + '|')
 
-    def minimax(self):
-        
+    def table_full(self, table):
+        for line in table:
+            if ' ' in line:
+                return False
+        return True
 
 
-    def do_move(self, board, x, y, player):
-        if board[x][y] == '':
-            board[x][y] = player
+    def do_move(self, x, y, player):
+        if self.board[x][y] == ' ':
+            self.board[x][y] = player
         else:
-            throw new Exception('Posição ocupada')
+            raise Exception('Posicao ocupada')
 
         draw = True
         count = 0
-        count_spaces = 0
         for i in xrange(0,3):
-            if board[i][y] == player:
+            if self.board[i][y] == player:
                 count += 1
-            elif board[i][y] == '':
-                count_spaces += 1
         if count == 3:
-            return {'victory':True}
-        if count_spaces == 3:
-            draw = False
+            return {'victory':True, 'draw':False}
 
         count = 0
-        count_spaces = 0
-        for i in xrange(1,10):
-            if board[x][i] == player:
+        for i in xrange(1,3):
+            if self.board[x][i] == player:
                 count += 1
-            elif board[x][i]:
-                count_spaces += 1
         if count == 3:
-            return {'victory':True}
-        if count_spaces == 3:
-            draw = False
+            return {'victory':True, 'draw':False}
 
         count = 0
-        count_spaces = 0
         count2 = 0
-        count_spaces2 = 0
         if (x+y)%2==0:
             for i in xrange(0,3):
-                if board[i][i] == player:
+                if self.board[i][i] == player:
                     count += 1
-                elif board[i][i] == '':
-                    count_spaces += 1
-                if board[i][2-i] == player:
+                if self.board[i][2-i] == player:
                     count2 += 1
-                elif board[i][2-i] == '':
-                    count_spaces2 += 1
-        if count == 3 || count2 == 3:
-            return {'victory':True}
-        if count_spaces == 3 || count_spaces2 == 3:
-            draw = False
-        return {'draw':draw}
+        if count == 3 or count2 == 3:
+            return {'victory':True, 'draw':False}
+
+        for i in xrange(0,3):
+            spaces_hor = 0
+            for j in xrange(0,3):
+                if self.board[i][j] == ' ':
+                    spaces_hor += 1
+            if spaces_hor == 3:
+                draw = False
+
+        for i in xrange(0,3):
+            spaces_vert = 0
+            for j in xrange(0,3):
+                if self.board[j][i] == ' ':
+                    spaces_vert += 1
+            if spaces_vert == 3:
+                draw = False
+
+        return {'victory':False,'draw':draw}
+
+def play_game():
+    game = TicTacToe()
+    game.current_player = 'X'
+    result = {'draw':False, 'victory':False}
+    game.print_board()
+    while not result['draw'] and not result['victory']:
+        result = game.human_move()
+        game.print_board()
+        print result
+
+play_game()
