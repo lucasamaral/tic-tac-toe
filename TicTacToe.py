@@ -41,9 +41,6 @@ class TicTacToe(object):
             return path_results[-1]
 
     def alfa_beta_minimax(self, player, alfa, beta):
-        print '<<<<<>>>>'
-        print 'table_full: ' + str(self.table_full(self.board))
-        self.print_board()
         if self.table_full(self.board):
             return (-1,-1,0)
 
@@ -59,13 +56,11 @@ class TicTacToe(object):
                             self.board[i][j] = ' '
                             return (i,j,-1)
                         analisis = self.alfa_beta_minimax(self.other_player(player), alfa, beta) #min(beta, cur_beta_node[2])
-                        if cur_beta_node[2] <= analisis[2]:
-                            cur_beta_node = (i,j,cur_beta_node[2])
-                        else:
-                            cur_beta_node = analisis
+                        if not cur_beta_node[2] <= analisis[2]:
+                            cur_beta_node = (i,j,analisis[2])
                         self.board[i][j] = ' '
                         if alfa >= cur_beta_node[2]:
-                            return cur_beta_node
+                            return (i,j,cur_beta_node[2])
             return cur_beta_node
         else:
             for i in xrange(0,3):
@@ -76,10 +71,8 @@ class TicTacToe(object):
                             self.board[i][j] = ' '
                             return (i,j,1)
                         analisis = self.alfa_beta_minimax(self.other_player(player), alfa, beta) #max(alfa,cur_alfa_node[2])
-                        if cur_alfa_node[2] >= analisis[2]:
-                            cur_alfa_node = (i,j,cur_alfa_node[2])
-                        else:
-                            cur_alfa_node = analisis
+                        if not cur_alfa_node[2] >= analisis[2]:
+                            cur_alfa_node = (i,j,analisis[2])
                         self.board[i][j] = ' '
                         if cur_alfa_node[2] >= beta:
                             return (i,j,cur_alfa_node[2])
