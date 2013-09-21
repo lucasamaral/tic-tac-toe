@@ -7,6 +7,7 @@ class TicTacToe(object):
         for i in xrange(0,3):
             self.board.append([' ', ' ', ' '])
         self.current_player = ' ' # jogador atual: 'X' ou 'O'
+        self.number_of_calls = 0
 
     def other_player(self, player):
         if player == 'X':
@@ -15,11 +16,11 @@ class TicTacToe(object):
             return 'X'
 
     def minimax_move(self, player):
+        self.number_of_calls+=1
         if self.table_full(self.board):
             return (-1,-1,0)
 
         path_results = []
-
         for i in xrange(0,3):
             for j in xrange(0,3):
                 if self.board[i][j] == ' ':
@@ -41,6 +42,7 @@ class TicTacToe(object):
             return path_results[-1]
 
     def alfa_beta_minimax(self, player, alfa, beta):
+        self.number_of_calls+=1
         if self.table_full(self.board):
             return (-1,-1,0)
 
@@ -55,7 +57,7 @@ class TicTacToe(object):
                         if result:
                             self.board[i][j] = ' '
                             return (i,j,-1)
-                        analisis = self.alfa_beta_minimax(self.other_player(player), alfa, beta) #min(beta, cur_beta_node[2])
+                        analisis = self.alfa_beta_minimax(self.other_player(player), alfa, min(beta, cur_beta_node[2]))
                         if not cur_beta_node[2] <= analisis[2]:
                             cur_beta_node = (i,j,analisis[2])
                         self.board[i][j] = ' '
@@ -70,7 +72,7 @@ class TicTacToe(object):
                         if result:
                             self.board[i][j] = ' '
                             return (i,j,1)
-                        analisis = self.alfa_beta_minimax(self.other_player(player), alfa, beta) #max(alfa,cur_alfa_node[2])
+                        analisis = self.alfa_beta_minimax(self.other_player(player), max(alfa,cur_alfa_node[2]), beta)
                         if not cur_alfa_node[2] >= analisis[2]:
                             cur_alfa_node = (i,j,analisis[2])
                         self.board[i][j] = ' '
@@ -139,11 +141,12 @@ def play_game():
         game.current_player = game.other_player(game.current_player)
         # play = game.minimax_move(game.current_player)
         play = game.alfa_beta_minimax(game.current_player, -sys.maxint-1, sys.maxint)
-        print 'jogada:' + str(play)
         if play[0] == -1:
             break;
         result = game.do_move(play[0], play[1], game.current_player)
         game.current_player = game.other_player(game.current_player)
         game.print_board()
+        print 'number_of_calls: ' + str(game.number_of_calls)
 
-play_game()
+if __name__ == '__main__':
+    play_game()
