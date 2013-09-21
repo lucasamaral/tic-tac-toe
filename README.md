@@ -4,7 +4,7 @@ tic-tac-toe
 >Tic-tac-toe game with computer player using artificial intelligence
 >Implemented using Python
 
-AI implemented using Minimax algorith and Minimax with Alpha Beta Cutoff
+AI implemented using Minimax algorith and Minimax with Alpha-beta pruning
 
 The Minimax method is: `def minimax_move(self, player):`
 
